@@ -29,8 +29,9 @@ exports.register = function(req, res) {
               const user = new User({
                  full_name: req.body.full_name,
                  email: req.body.email,
-                 dob: moment(req.body.dob).format('YYYY-MM-DD'),
+                 dob:  req.body.dob,
                  password: hash,
+                 provider: req.body.provider,
                  created_date : moment().format('YYYY-MM-DD HH:mm:ss Z')
               });
               user.save().then(function(result) {
@@ -71,7 +72,8 @@ exports.sign_in = function(req, res) {
      });
      return res.status(200).json({
        success: 'Welcome to the App',
-       token: JWTToken
+       token: JWTToken,
+       full_name: user.full_name
      });
          }
          return res.status(401).json({
