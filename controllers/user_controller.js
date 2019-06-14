@@ -17,24 +17,35 @@ exports.register = function(req, res) {
         });
      }
      else {
-        const user = new User({
-           full_name: req.body.full_name,
-           email: req.body.email,
-           dob: moment(req.body.dob).format('YYYY-MM-DD'),
-           password: hash,
-           created_date : moment().format('YYYY-MM-DD HH:mm:ss Z')
-        });
-        user.save().then(function(result) {
-           console.log(result);
-           res.status(200).json({
-              success: 'New user has been created',
-              id: result._id
-           });
-        }).catch(error => {
-           res.status(500).json({
-              error: err
-           });
-        });
+        User.findOne({ email: req.body.email })
+          .exec(function (error, user) {
+            if (error) {
+              return callback(error);
+            } else if ( user ) {
+              res.status(401).json({
+                error: 'A user with that email has already registered. Please use a different email.'
+              })
+            } else {
+              const user = new User({
+                 full_name: req.body.full_name,
+                 email: req.body.email,
+                 dob: moment(req.body.dob).format('YYYY-MM-DD'),
+                 password: hash,
+                 created_date : moment().format('YYYY-MM-DD HH:mm:ss Z')
+              });
+              user.save().then(function(result) {
+                 console.log(result);
+                 res.status(200).json({
+                    success: 'New user has been created',
+                    id: result._id
+                 });
+              }).catch(error => {
+                 res.status(500).json({
+                    error: err
+                 });
+              });
+            }
+          });
      }
   });
 };
@@ -100,18 +111,8 @@ exports.logout = function(req, res) {
 
 
 exports.usersList = function(req, res) {
-   let limit = req.query.limit && req.query.limit <= 100 ? parseInt(req.query.limit) : 10;
-   let page = 0;
-   if (req.query) {
-       if (req.query.page) {
-           req.query.page = parseInt(req.query.page);
-           page = Number.isInteger(req.query.page) ? req.query.page : 0;
-       }
-   }
    new Promise((resolve, reject) => {
        User.find()
-           .limit(limit)
-           .skip(limit * page)
            .exec(function (err, users) {
                if (err) {
                    res.status(500).send(err);

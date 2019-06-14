@@ -5,7 +5,7 @@ var user_controller = require('../controllers/user_controller');
 
 router.post('/consumers/signin', [user_controller.sign_in]);
 router.get('/consumers/get_current_user',[user_controller.loginRequired]);
-router.get('/consumers',[user_controller.usersList]);
+router.get('/consumers/all',[user_controller.usersList]);
 router.post('/consumers/signup', [user_controller.register]);
 router.get('/consumers/:userId', [user_controller.getById]);
 router.post('/consumers/logout', [user_controller.logout]);

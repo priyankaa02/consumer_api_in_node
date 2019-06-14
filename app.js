@@ -37,37 +37,6 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
-cron.schedule("36 6 * * *", function() {
-  Keyword.find({data : []}).then(result => {
-    console.log(result);
-    for(var i = 0;i<result.length;i++)
-    {
-      var key = result[i].keyword;
-      setTimeout( function (i) {
-        request('https://jobs.github.com/positions.json?description='+key, { json: true }, (err, res, body) => {
-          if (err) { return console.log(err); }
-            saveData(key,body);
-            console.log("res",res);
-
-    });
-    }, 2000);
-    }
-  })
-  });
-
-  function saveData(key,result)
-  {
-
-    var myquery = { keyword: key };
-    var newvalues = { $set: { data: result } };
-    Keyword.findOneAndUpdate(myquery, newvalues, { new: true }, function(err, res) {
-      if (err) { throw err; }
-      else { console.log("Updated"); }
-    });
-
-  }
-
-
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
