@@ -38,7 +38,8 @@ exports.register = function(req, res) {
                  console.log(result);
                  res.status(200).json({
                     success: 'New user has been created',
-                    id: result._id
+                    id: result._id,
+                    provider: result.provider
                  });
               }).catch(error => {
                  res.status(500).json({
