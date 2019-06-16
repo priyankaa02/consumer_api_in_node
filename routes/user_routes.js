@@ -9,7 +9,5 @@ router.get('/consumers/all',[user_controller.usersList]);
 router.post('/consumers/signup', [user_controller.register]);
 router.get('/consumers/:userId', [user_controller.getById]);
 router.post('/consumers/logout', [user_controller.logout]);
-router.get('/largest/invoice', [user_controller.largestInvoice]);
-router.get('/largest/units', [user_controller.largestUnits]);
 
 module.exports = router;
